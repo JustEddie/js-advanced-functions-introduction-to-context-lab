@@ -52,9 +52,38 @@ function hoursWorkedOnDate(obj, whichDate) {
     .map(function (element) {
       element.hour;
     });
-  const hours = parseInt(outTime - inTime,10);
-  const worked = hours.slice(-1,1)+hours.slice(1,3)/60
+  const hours = parseInt(outTime - inTime,10)/100;
 }
+
+function wagesEarnedOnDate(obj,date){
+    return hoursWorkedOnDate(obj,date)*obj.payPerHour
+}
+
+function allWagesFor(obj){
+    const allDates = [];
+    const allTheWage = [];
+    allDates.push(obj.timeInEvents.map((element)=>{element.date}))
+    for (const dates of allDates) {
+
+        allTheWage.push(wagesEarnedOnDate(obj,dates))
+    }
+    return allTheWage.reduce((a,b)=>a+b,0)
+}
+
+function findEmployeeByFirstName(srcArr,firstName){
+    return srcArr.find(function(employee){
+        return employee.firstName === firstName
+    })
+}
+
+function calculatePayroll(arr){
+    let totalMoney = 0;
+    for (const employee of arr) {
+        totalMoney += allWagesFor(employee);
+    }
+    return totalMoney;
+}
+
 
 // const eddieRecord = ["Eddie", "Na", "chef", "30"];
 // const eddieTimeInStamp = "2022-07-28 0900";
