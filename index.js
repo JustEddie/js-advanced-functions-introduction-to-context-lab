@@ -22,57 +22,71 @@ function createTimeInEvent(obj, stamp) {
   // const newArr = createEmployeeRecord(obj);
   const type = "TimeIn";
   const stampArr = stamp.split(" ");
-  const hour = stampArr[1];
+  const hour = parseInt(stampArr[1],10);
   const date = stampArr[0];
-  obj.timeOutEvents.push({ type, hour, date });
+  obj.timeInEvents.push({ type, hour, date });
   return obj;
 }
 
 function createTimeOutEvent(obj, stamp) {
   const stampArr = stamp.split(" ");
   const type = "TimeOut";
-  const hour = stampArr[1];
+  const hour = parseInt(stampArr[1],10);
   const date = stampArr[0];
   obj.timeOutEvents.push({ type, hour, date });
   return obj;
 }
 
 function hoursWorkedOnDate(obj, whichDate) {
-  const inTime = obj.timeInEvents
-    .filter(function (element) {
-      element.date === whichDate;
-    })
-    .map(function (element) {
-      element.hour;
-    });
-  const outTime = obj.timeOutEvents
-    .filter(function (element) {
-      element.date === whichDate;
-    })
-    .map(function (element) {
-      element.hour;
-    });
-  const hours = parseInt(outTime - inTime,10)/100;
+  let inTime = 0;
+  obj.timeInEvents.forEach((timeInEvent)=>{
+    if(timeInEvent.date===whichDate){
+      return inTime = timeInEvent.hour
+    }
+  })
+    // .filter(function (element) {
+    //   element.date === whichDate;
+    // })
+    // .map(function (element) {
+    //   element.hour;
+    // });
+  let outTime = 0;
+  obj.timeOutEvents.forEach((timeOutEvent)=>{
+    if(timeOutEvent.date===whichDate){
+      return outTime = timeOutEvent.hour
+    }
+  })
+    // .filter(function (element) {
+    //   element.date === whichDate;
+    // })
+    // .map(function (element) {
+    //   element.hour;
+    // });
+  const hours = (outTime - inTime)/100;
+  return hours;
 }
 
 function wagesEarnedOnDate(obj,date){
-    return hoursWorkedOnDate(obj,date)*obj.payPerHour
+    return hoursWorkedOnDate(obj,date)*parseInt(obj.payPerHour);
 }
 
 function allWagesFor(obj){
-    const allDates = [];
-    const allTheWage = [];
-    allDates.push(obj.timeInEvents.map((element)=>{element.date}))
-    for (const dates of allDates) {
+    // const allDates = [];
+    // const allTheWage = [];
+    // allDates.push(obj.timeInEvents.map((element)=>{element.date}))
+    // for (const dates of allDates) {
 
-        allTheWage.push(wagesEarnedOnDate(obj,dates))
+    //   allTheWage.push(wagesEarnedOnDate(obj,dates))
+    //   return allTheWage.reduce((a,b)=>a+b,0)
+    return obj.timeInEvents.reduce((a,b)=>{
+      return a+ wagesEarnedOnDate(obj,b.date)
+    },0)
     }
-    return allTheWage.reduce((a,b)=>a+b,0)
-}
 
-function findEmployeeByFirstName(srcArr,firstName){
+
+function findEmployeeByFirstName(srcArr,employeeFirstName){
     return srcArr.find(function(employee){
-        return employee.firstName === firstName
+        return employee.firstName === employeeFirstName
     })
 }
 
